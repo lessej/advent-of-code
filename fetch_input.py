@@ -68,7 +68,7 @@ def main():
     write_to_file(input, input_path)
 
     print(f'...input data written to {input_path}')
-    print('============= Good luck! =============')
+    print('================= Good luck! =================')
 
 
 main()
