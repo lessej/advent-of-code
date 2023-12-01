@@ -2,7 +2,7 @@
 
 ## Running Solutions 🦀
 
-```
+```rust
 cargo run --release --bin <Day number> # Run a specific day
 ```
 ## Fetching Input 🐍
