@@ -49,8 +49,10 @@ def write_to_file(input, input_path):
     try:
         in_file = open(input_path, mode='x')
         in_file.write(input)
+    except FileExistsError:
+        sys.exit(f'An input file already exists at {input_path}')
     except:
-        sys.exit(f'There was a problem creating the input file at {input_path}')
+        sys.exit(f'There was a problem creating and writing to the input file at {input_path}')
 
 
 def main():
