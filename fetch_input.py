@@ -51,6 +51,8 @@ def write_to_file(input, input_path):
         in_file.write(input)
     except FileExistsError:
         sys.exit(f'An input file already exists at {input_path}')
+    except FileNotFoundError:
+        sys.exit(f'A file could not be created at {input_path}.  Are you sure the path is correct?')
     except:
         sys.exit(f'There was a problem creating and writing to the input file at {input_path}')
 
