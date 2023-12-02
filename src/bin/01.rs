@@ -116,21 +116,19 @@ fn part_2(input: &str) -> usize {
 #[cfg(test)]
 mod test {
     #[test]
-    fn part_1() -> Result<(), Box<dyn std::error::Error>> {
+    fn d1_p1() {
         let input = "1abc2
 pqr3stu8vwx
 a1b2c3d4e5f
 treb7uchet";
 
-        let (p1, _) = super::aoc_solution(input);
-        println!("Part I | Expected: 142, Given: {p1}");
-        assert_eq!(p1, 142);
-
-        Ok(())
+        let res = super::part_1(input);
+        println!("Expected: 142, Given: {res}");
+        assert_eq!(142, res);
     }
 
     #[test]
-    fn part_2() -> Result<(), Box<dyn std::error::Error>> {
+    fn d1_p2() {
         let input = "two1nine
 eightwothree
 abcone2threexyz
@@ -139,10 +137,8 @@ xtwone3four
 zoneight234
 7pqrstsixteen";
 
-        let (_, p2) = super::aoc_solution(input);
-        println!("Part II | Expected: 281, Given: {p2}");
-        assert_eq!(p2, 281);
-
-        Ok(())
+        let res = super::part_2(input);
+        println!("Expected: 281, Given: {res}");
+        assert_eq!(res, 281);
     }
 }
