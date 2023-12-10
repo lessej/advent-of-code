@@ -2,8 +2,6 @@
 pub fn main(input: &str) -> (usize, usize) {
     let p1 = part_1(input);
     let p2 = part_2(input);
-    
-    // should be 433
 
     (p1, p2)
 }
