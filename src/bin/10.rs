@@ -241,36 +241,43 @@ fn part_2(input: &str) -> usize {
     for row in 1..grid.len() {
         for col in 1..grid[0].len() {
             if loop_chars.get(&(row, col)).is_none() {
-                let mut col_count = 0;
-                let mut row_count = 0;
-                let mut i = row;
-                let mut j = col;
-
-                while i < grid.len() {
-                    if loop_chars.get(&(i, col)).is_some() {
-                        match grid[i][col] {
-                            'L' | 'J' | '-' => row_count += 1,
+                let mut wall_count = 0;
+                let mut i = col;
+                let mut is_open_f = false;
+                let mut is_open_l = false;
+                while i < grid[0].len() {
+                    if loop_chars.get(&(row, i)).is_some() {
+                        match grid[row][i] {
+                            'F' => is_open_f = true,
+                            'L' => is_open_l = true,
+                            'J' => {
+                                if is_open_f {
+                                    wall_count += 1;
+                                    is_open_f = false;
+                                }
+                                is_open_l = false;
+                            },
+                            '7' => {
+                                if is_open_l {
+                                    wall_count += 1;
+                                    is_open_l = false;
+                                }
+                                is_open_f = false;
+                            }
+                            '|' => wall_count += 1,
                             _ => {}
-                        }
-                    }
 
+                        }
+                    } else {
+                        is_open_f = false;
+                        is_open_l = false;
+                    }
                     i += 1;
+
                 }
 
-                while j < grid[0].len() {
-                    if loop_chars.get(&(row, j)).is_some() {
-                        match grid[row][j] {
-                            'J' | '7' | '|' => col_count += 1,
-                            _ => {}
-                        }
-                    }
-                    j += 1;
-                }
-
-
-                if col_count % 2 != 0 && row_count % 2 != 0 {
+                if wall_count % 2 != 0 {
                     inside.insert((row, col));
-
                 }
             }
         }
@@ -320,6 +327,7 @@ L---JF-JLJ.||-FJLJJ7
 7-L-JL7||F7|L7F-7F7|
 L.L7LFJ|||||FJL7||LJ
 L7JLJL-JLJLJL--JLJ.L";
+
 
         let res = super::part_2(input);
         println!("Expected: 10, Received: {res}");
