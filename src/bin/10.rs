@@ -133,8 +133,6 @@ fn part_1(input: &str) -> usize {
         }
     }
 
-    // println!("Start: ({},{}), next: ({},{})", start.0, start.1, next.0, next.1);
-
 
     let mut prev: (usize, usize) = start.clone();
     let mut is_loop_complete = false;
@@ -143,7 +141,6 @@ fn part_1(input: &str) -> usize {
         let temp_prev = next.clone();
         next = get_next(next, prev, &grid);
         prev = temp_prev;
-        // println!("next: {}, {}", next.0, next.1);
         if next == start {
             is_loop_complete = true;
         }
