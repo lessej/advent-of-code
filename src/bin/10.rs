@@ -234,43 +234,34 @@ fn part_2(input: &str) -> usize {
 
     let mut inside: std::collections::HashSet<(usize, usize)> = std::collections::HashSet::new();
     for row in 1..grid.len() {
+        let mut wall_count = 0;
+        let mut is_open_f = false;
+        let mut is_open_l = false;
         for col in 1..grid[0].len() {
-            if loop_chars.get(&(row, col)).is_none() {
-                let mut wall_count = 0;
-                let mut i = col;
-                let mut is_open_f = false;
-                let mut is_open_l = false;
-                while i < grid[0].len() {
-                    if loop_chars.get(&(row, i)).is_some() {
-                        match grid[row][i] {
-                            'F' => is_open_f = true,
-                            'L' => is_open_l = true,
-                            'J' => {
-                                if is_open_f {
-                                    wall_count += 1;
-                                    is_open_f = false;
-                                }
-                                is_open_l = false;
-                            },
-                            '7' => {
-                                if is_open_l {
-                                    wall_count += 1;
-                                    is_open_l = false;
-                                }
-                                is_open_f = false;
-                            }
-                            '|' => wall_count += 1,
-                            _ => {}
-
+            if loop_chars.get(&(row, col)).is_some() {
+                match grid[row][col] {
+                    'F' => is_open_f = true,
+                    'L' => is_open_l = true,
+                    'J' => {
+                        if is_open_f {
+                            wall_count += 1;
+                            is_open_f = false;
                         }
-                    } else {
-                        is_open_f = false;
                         is_open_l = false;
+                    },
+                    '7' => {
+                        if is_open_l {
+                            wall_count += 1;
+                            is_open_l = false;
+                        }
+                        is_open_f = false;
                     }
-                    i += 1;
-
+                    '|' => wall_count += 1,
+                    _ => {}
                 }
-
+            } else {
+                is_open_f = false;
+                is_open_l = false;
                 if wall_count % 2 != 0 {
                     inside.insert((row, col));
                 }
