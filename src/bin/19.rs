@@ -6,7 +6,9 @@ pub fn main(input: &str) -> (usize, usize) {
     (p1, p2)
 }
 
-#[derive(Debug)]
+type Range = [(usize, usize); 4];
+
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 struct Part {
     x: usize,
     m: usize,
@@ -26,6 +28,17 @@ enum PartType {
     M,
     A,
     S,
+}
+
+impl PartType {
+    fn to_idx(&self) -> usize {
+        match self {
+            Self::X => 0,
+            Self::M => 1,
+            Self::A => 2,
+            Self::S => 3,
+        }
+    }
 }
 
 impl From<char> for PartType {
@@ -67,12 +80,16 @@ struct Rule {
 #[derive(Debug)]
 struct Workflow {
     workflows: std::collections::HashMap<String, Vec<Rule>>,
+    accepted: std::collections::HashSet<Part>,
+    accepted_ranges: [(usize, usize); 4],
 }
 
 impl Workflow {
     fn new() -> Self {
         Self {
             workflows: std::collections::HashMap::new(),
+            accepted: std::collections::HashSet::new(),
+            accepted_ranges: [(1, 4000); 4],
         }
     }
 
@@ -109,7 +126,7 @@ impl Workflow {
         }
     }
 
-    fn count_accepted(&self, parts: &Vec<Part>) -> usize {
+    fn count_accepted(&mut self, parts: &Vec<Part>) -> usize {
         let mut total = 0;
         for part in parts {
             let mut curr_workflow = self.workflows.get("in").unwrap();
@@ -142,6 +159,7 @@ impl Workflow {
                 match dest.chars().next().unwrap() {
                     'A' => {
                         total += part.get_val();
+                        self.accepted.insert((*part).clone());
                         break 'outer;
                     },
                     'R' => break 'outer,
@@ -152,15 +170,58 @@ impl Workflow {
 
         total
     }
+
+    fn adjust_ranges(&self, curr_range: Range, workflow_name: &str) -> Vec<Range> {
+        match workflow_name {
+            "A" => return vec![curr_range],
+            "R" => return vec![],
+            _ => (),
+        }
+        let mut valid_ranges: Vec<Range> = Vec::new();
+        let mut curr_range = curr_range;
+        for rule in self.workflows.get(workflow_name).unwrap() {
+            let dest = rule.next.clone();
+            let idx = rule.part.to_idx();
+            match rule.op {
+                Some(Op::Lt) => {
+                    if curr_range[idx].1 < rule.threshold {
+                        valid_ranges.extend(self.adjust_ranges(curr_range, dest.as_str()));
+                    } else if curr_range[idx].0 < rule.threshold {
+                        let mut new_range = curr_range;
+                        new_range[idx].1 = rule.threshold - 1;
+                        valid_ranges.extend(self.adjust_ranges(new_range, dest.as_str()));
+                        curr_range[rule.part.to_idx()].0 = rule.threshold;
+                    }
+                },
+                Some(Op::Gt) => {
+                    if curr_range[idx].0 > rule.threshold {
+                        valid_ranges.extend(self.adjust_ranges(curr_range, dest.as_str()));
+                    } else if curr_range[idx].1 > rule.threshold {
+                        let mut new_range = curr_range;
+                        new_range[idx].0 = rule.threshold + 1;
+                        valid_ranges.extend(self.adjust_ranges(new_range, dest.as_str()));
+                        curr_range[idx].1 = rule.threshold;
+                    }
+                },
+                None => valid_ranges.extend(self.adjust_ranges(curr_range, dest.as_str()))
+            }
+        }
+
+        valid_ranges
+    }
+
+    fn total_ranges(&self) -> usize {
+        println!("Ranges: {:?}", self.accepted_ranges);
+        self.accepted_ranges
+            .iter()
+            .map(|r| (r.1 as isize - r.0 as isize).abs() as usize + 1)
+            .fold(1, |acc, n| acc * n)
+            .into()
+    }
 }
 
-pub fn part_1(input: &str) -> usize {
-    let (workflows, parts) : (&str, &str) = input
-        .split_once("\n\n")
-        .unwrap()
-        .into();
-
-    let parts: Vec<Part> = parts
+fn get_parts(parts: &str) -> Vec<Part> {
+    parts
         .lines()
         .map(|line| { 
             let line = line[1..(line.len() - 1)].to_string();
@@ -177,8 +238,20 @@ pub fn part_1(input: &str) -> usize {
                 s,
             }
         })
-        .collect();
+        .collect()
+}
 
+fn get_combinations(range: Range) -> usize {
+    range.iter().fold(1, |acc, &(r_start, r_end)| acc * (r_end - r_start + 1))
+}
+
+pub fn part_1(input: &str) -> usize {
+    let (workflows, parts) : (&str, &str) = input
+        .split_once("\n\n")
+        .unwrap()
+        .into();
+
+    let parts = get_parts(&parts);
     let mut workflow = Workflow::new();
     workflow.parse_to_workflow(&workflows);
     let total = workflow.count_accepted(&parts);
@@ -187,7 +260,20 @@ pub fn part_1(input: &str) -> usize {
 }
 
 pub fn part_2(input: &str) -> usize {
-    0
+    let (workflows, parts) : (&str, &str) = input
+        .split_once("\n\n")
+        .unwrap()
+        .into();
+
+    let parts = get_parts(&parts);
+    let mut workflow = Workflow::new();
+    workflow.parse_to_workflow(&workflows);
+    workflow.count_accepted(&parts);
+
+    workflow.adjust_ranges([(1, 4000); 4], "in")
+        .into_iter()
+        .map(get_combinations)
+        .sum()
 }
 
 #[cfg(test)]
@@ -219,10 +305,26 @@ hdj{m>838:A,pv}
 
     #[test]
     fn d19_p2() {
-        let input = "";
+        let input = "px{a<2006:qkq,m>2090:A,rfg}
+pv{a>1716:R,A}
+lnx{m>1548:A,A}
+rfg{s<537:gd,x>2440:R,A}
+qs{s>3448:A,lnx}
+qkq{x<1416:A,crn}
+crn{x>2662:A,R}
+in{s<1351:px,qqz}
+qqz{s>2770:qs,m<1801:hdj,R}
+gd{a>3333:R,R}
+hdj{m>838:A,pv}
+
+{x=787,m=2655,a=1222,s=2876}
+{x=1679,m=44,a=2067,s=496}
+{x=2036,m=264,a=79,s=2244}
+{x=2461,m=1339,a=466,s=291}
+{x=2127,m=1623,a=2188,s=1013}";
 
         let res = super::part_2(input);
-        println!("Expected: , Received: {res}");
-        assert_eq!(0, res);
+        println!("Expected: 167409079868000, Received: {res}");
+        assert_eq!(167409079868000, res);
     }
 }
