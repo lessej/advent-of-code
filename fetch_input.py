@@ -4,6 +4,16 @@ import os
 import dotenv
 import sys
 
+
+def try_get_cli_arg():
+    if len(sys.argv) <= 1:
+        return -1
+    day_num = int(sys.argv[1])
+    if day_num < 0 or day_num > 25:
+        return -1
+    return day_num
+
+
 def get_today():
     tz_offset = -5.0 # EST
     tzinfo = datetime.timezone(datetime.timedelta(hours = tz_offset))
@@ -58,7 +68,9 @@ def write_to_file(input, input_path):
 
 
 def main():
-    day_num = get_today()
+    day_num = try_get_cli_arg()
+    if day_num == -1:
+        day_num = get_today()
     print(f'===== Advent of Code 2023 Day {day_num} =====')
     print('Fetching input data...')
 
