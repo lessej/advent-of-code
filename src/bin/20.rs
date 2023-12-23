@@ -2,8 +2,7 @@ use std::collections::HashMap;
 
 #[aoc::main(20)]
 pub fn main(input: &str) -> (usize, usize) {
-    // let p1 = part_1(input);
-    let p1 = 0;
+    let p1 = part_1(input);
     let p2 = part_2(input);
 
     (p1, p2)
@@ -22,26 +21,22 @@ impl Module {
         }
     }
 
-    fn sig_in_out(&mut self, signal: Signal) -> (Option<bool>, Option<String>) {
+    fn sig_in_out(&mut self, signal: Signal) -> Option<bool> {
         match self {
             Module::FlipFlop(state) => {
                 if signal.level {
-                    (None, None)
+                    None
                 } else {
                     *state = !*state;
-                    (Some(*state), None)
+                    Some(*state)
                 }
             },
             Module::Conjunction(input_levels) => {
                 *input_levels.get_mut(&signal.from).unwrap() = signal.level;
                 let is_all_high = input_levels.values().all(|l| *l);
-                if is_all_high {
-                    (Some(!is_all_high), Some(signal.from))
-                } else {
-                    (Some(!is_all_high), None)
-                }
+                Some(!is_all_high)
             },
-            Module::Broadcaster => (Some(signal.level), None),
+            Module::Broadcaster => Some(signal.level),
         }
     }
 }
@@ -73,7 +68,6 @@ struct Modules {
 
 impl Modules {
     fn check_all_set(&self) -> bool {
-        println!("checks: {:?}", self.conjs);
         self.conjs.values().into_iter().all(|c| c.is_some())
     }
 
@@ -84,25 +78,23 @@ impl Modules {
         queue.push_back(start_sig);
 
         while let Some(curr_sig) = queue.pop_front() {
+            if CONJUNCTIONS.contains(&curr_sig.from.as_str()) && curr_sig.level {
+                if let Some(conj) = self.conjs.get_mut(&curr_sig.from) {
+                    *conj = Some(self.button_count);
+                }
+
+                if self.check_all_set() {
+                    return Some(true);
+                }
+            }
             match curr_sig.level {
                 true => self.high_pulse_count += 1,
                 false => self.low_pulse_count += 1,
             }
 
             let target = &(curr_sig.to.clone());
-            let from = &(curr_sig.from.clone());
             if let Some(module) = self.modules.get_mut(target) {
-                if let (Some(new_level), is_finished) = module.sig_in_out(curr_sig) {
-                    if let Some(fin_mod) = is_finished {
-                        if CONJUNCTIONS.contains(&fin_mod.as_str()) {
-                            if let Some(conj) = self.conjs.get_mut(&fin_mod) {
-                                *conj = Some(self.button_count);
-                                if self.check_all_set() {
-                                    return Some(true);
-                                }
-                            }
-                        }
-                    }
+                if let Some(new_level) = module.sig_in_out(curr_sig) {
                     let outputs = self.outputs.get(target).unwrap();
                     for output in outputs {
                         let new_sig = Signal::new(target.clone(), output.clone(), new_level);
@@ -196,8 +188,6 @@ pub fn part_2(input: &str) -> usize {
         modules.insert(name.to_string(), module);
     }
 
-    println!("checks: {:?}", conjs);
-
     for (mod_name, input_names) in inputs {
         if let Some(module) = modules.get_mut(&mod_name) {
             module.init_conjunc(input_names);
@@ -221,7 +211,6 @@ pub fn part_2(input: &str) -> usize {
     }
 
     let cycle_lens: Vec<usize> = modules.conjs.values().map(|cl| cl.unwrap()).collect();
-    println!("{:?}", cycle_lens);
 
     lcm(&cycle_lens)
 }
@@ -273,11 +262,11 @@ mod tests {
 &con -> output";
 
 
-        // let res_1 = super::part_1(input_1);
+        let res_1 = super::part_1(input_1);
         let res_2 = super::part_1(input_2);
 
-        // println!("Expected: 32000000, Received: {res_1}");
-        // assert_eq!(32000000, res_1);
+        println!("Expected: 32000000, Received: {res_1}");
+        assert_eq!(32000000, res_1);
 
         println!("Expected: 11687500, Received: {res_2}");
         assert_eq!(11687500, res_2);
