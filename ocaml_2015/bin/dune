@@ -1,4 +1,4 @@
 (executables
- (public_names d1 d2 d3 d4 d5 d6)
- (names d1 d2 d3 d4 d5 d6)
+ (public_names d1 d2 d3 d4 d5 d6 d7)
+ (names d1 d2 d3 d4 d5 d6 d7)
  (libraries ocaml_2015))
