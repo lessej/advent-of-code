@@ -2,7 +2,7 @@
 
 These are my solutions for AoC.  I'm like using it to learn new languages.  This year (2024) I'm learning OCaml.
 
-### Years
+## Years
 
 - [2015](https://github.com/lessej/advent-of-code/tree/main/ocaml_2015)
 - [2023](https://github.com/lessej/advent-of-code/tree/main/rust_2023)
