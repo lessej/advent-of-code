@@ -46,7 +46,6 @@ let count_safe lines =
     count (i + 1) (total + to_add) in
   count 0 0
 
-
 let det_with_removal line =
   let rec check_with_removal i =
     if i >= List.length line then false else
@@ -69,8 +68,6 @@ let count_safe_with_removal lines =
       ) in
     count (i + 1) (total + to_add) in
   count 0 0
-    
-
 
 let () = 
   let lines = read_lines filename in 
@@ -79,4 +76,3 @@ let () =
   let p2_res = count_safe_with_removal lines in
   Printf.printf "The answer for part 2 is: %d\n" p2_res;
   ();
-
