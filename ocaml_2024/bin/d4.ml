@@ -12,17 +12,6 @@ type dir =
   | Bc
   | Br
 
-let string_of_dir dir =
-  match dir with
-  | Tl -> "Tl"
-  | Tc -> "Tc"
-  | Tr -> "Tr"
-  | Ml -> "Ml"
-  | Mr -> "Mr"
-  | Bl -> "Br"
-  | Bc -> "Bc"
-  | Br -> "Bl"
-
 let get_next (x,y) d = 
   match d with
   | Tl -> (x-1,y-1)
