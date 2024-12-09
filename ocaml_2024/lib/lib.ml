@@ -31,3 +31,25 @@ let insertion_sort unsorted f =
     | x::xs -> insert x (sort xs)
   in
   sort unsorted
+
+let rec insert x perms_list =
+  match perms_list with
+  | [] -> [[x]]
+  | h::t -> 
+    (x::perms_list) :: (List.map (fun el -> h::el) (insert x t));;
+
+let rec permutations_of_list input_list =
+  match input_list with
+  | [] -> [input_list]
+  | h::t -> 
+    List.flatten (List.map (insert h) (permutations_of_list t));;
+
+let matrix_of_string_list lines =
+  let rec matrix_line rem arr_list =
+    match rem with
+    | [] -> arr_list
+    | h::t ->
+      let char_arary = Array.init (String.length h) (fun i -> h.[i]) in
+      matrix_line t (char_arary :: arr_list)
+  in
+  Array.of_list (matrix_line (List.rev lines) [])
