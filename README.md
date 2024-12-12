@@ -1,6 +1,6 @@
 # 🎄 Advent of Code 🎄
 
-These are my solutions for AoC.  I'm like using it to learn new languages.  This year (2024) I'm learning OCaml.
+These are my solutions for AoC.  I like using it to learn new languages.  This year (2024) I'm learning OCaml.
 
 ## Years
 
