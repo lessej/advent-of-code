@@ -15,9 +15,11 @@ let read_lines filename =
   let ic = open_in filename in
   read_lines_channel ic
 
-let list_of_hash_keys ht = Hashtbl.fold (fun k _v acc -> k :: acc) ht []
+let list_of_hash_keys ht = Hashtbl.fold (fun k _v acc -> k::acc) ht []
 
-let list_of_hash_vals ht = Hashtbl.fold (fun _k v acc -> v :: acc) ht []
+let list_of_hash_vals ht = Hashtbl.fold (fun _k v acc -> v::acc) ht []
+
+let list_of_hash ht = Hashtbl.fold (fun k v acc -> (k,v)::acc) ht []
 
 let insertion_sort unsorted f =
   let rec insert x l =
