@@ -1,5 +1,4 @@
 open Ocaml_2024.Lib
-open Binary_heap
 
 let filename = "input/d16.txt"
 
@@ -17,13 +16,6 @@ module E = struct
     Stdlib.compare a b
 end
 module PQ = Binary_heap.Make(E)
-
-let opposite_of_dir d =
-  match d with
-  | North -> South
-  | South -> North
-  | East -> West
-  | West -> East
 
 let get_lr d =
   match d with

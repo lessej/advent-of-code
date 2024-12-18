@@ -50,14 +50,6 @@ let sum_boxes grid =
   in
   search 0 0 0
 
-let print_matrix matrix =
-  Array.iter (fun line ->
-    Array.iter (fun c ->
-      Printf.printf "%c" c;
-    ) line;
-    Printf.printf "\n";
-  ) matrix
-
 let move_horiz px py matrix op =
   let rec find_start i =
     match matrix.(py).(i) with
