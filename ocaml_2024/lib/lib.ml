@@ -55,3 +55,11 @@ let matrix_of_string_list lines =
       matrix_line t (char_arary :: arr_list)
   in
   Array.of_list (matrix_line (List.rev lines) [])
+
+let print_char_char_matrix matrix =
+  Array.iter (fun line ->
+    Array.iter (fun c ->
+      Printf.printf "%c" c;
+    ) line;
+    Printf.printf "\n";
+  ) matrix

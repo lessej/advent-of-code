@@ -121,17 +121,3 @@ let () =
   let p2_res = p2 lines in
   Printf.printf "The answer for part 2 is: %d\n" p2_res;
   ()
-
-
-
-(* let move_double_up px py matrix = *)
-(*   let rec can_move_up i l r = *)
-(*     if matrix.(i).(l) = '.' && matrix.(i).(r) = '.' then true else *)
-(*     if matrix.(i).(l) = '#' || matrix.(i).(r) = '#' then false else *)
-(*     if matrix.(i).(l) = '[' then can_move_up (i-1) l r else *)
-(*     let ok_l = if matrix.(i).(l) = ']' then can_move_up (i-1) (l-1) l else true in *)
-(*     let ok_r = if matrix.(i).(r) = '[' then can_move_up (i-1) r (r+1) else true in *)
-(*     ok_l && ok_r *)
-(*   in *)
-(*   can_move_up 4 6 7  *)
-(*  *)
