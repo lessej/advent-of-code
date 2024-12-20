@@ -12,17 +12,6 @@ type op =
   | Bdv of int
   | Cdv of int
 
-let string_of_op o =
-  match o with
-  | Adv v -> "Adv: " ^ (string_of_int v)
-  | Bxl v -> "Bxl: " ^ (string_of_int v)
-  | Bst v -> "Bst: " ^ (string_of_int v)
-  | Jnz v -> "Jnz: " ^ (string_of_int v)
-  | Bxc v -> "Bxc: " ^ (string_of_int v)
-  | Out v -> "Out: " ^ (string_of_int v)
-  | Bdv v -> "Bdv: " ^ (string_of_int v)
-  | Cdv v -> "Cdv: " ^ (string_of_int v)
-
 let op_of_strs o v =
   let v = int_of_string v in
   match o with
@@ -99,7 +88,7 @@ let compute_all instructions a b c =
 let p2 lines =
   let instructions = get_instructions lines in
   let quine = "2415751603465530" in
-  let (a,b,c) = get_registers lines in
+  let (_a,b,c) = get_registers lines in
   let rec try_build_sol i curr res =
     if i >= 16 then Some res else
     let rec try_bits = function
