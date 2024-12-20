@@ -7,3 +7,4 @@ val insertion_sort : 'a list -> ('a -> 'a -> bool) -> 'a list
 val permutations_of_list : 'a list -> 'a list list
 val matrix_of_string_list : string list -> char array array
 val print_char_char_matrix : char array array -> unit
+val pow : int -> int -> int
