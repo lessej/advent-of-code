@@ -6,7 +6,8 @@ let parse lines =
   let parse_avail line =
     String.split_on_char ',' line |> List.map (fun s -> String.trim s) |> List.rev
   in
-  let avail::_blank::arrangements = lines in
+  let avail = List.nth lines 0 in
+  let arrangements = List.filteri (fun i _ -> i > 1) lines in
   let avail = parse_avail avail in
   (avail, arrangements)
 
