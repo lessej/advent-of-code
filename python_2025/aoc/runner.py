@@ -1,6 +1,3 @@
-#!/usr/bin/env python3
-
-
 import importlib
 import sys
 from datetime import datetime
@@ -8,7 +5,7 @@ from datetime import datetime
 
 def main():
     day = int(sys.argv[1])
-    solution = importlib.import_module(f"day{day:02d}")
+    solution = importlib.import_module(f"solutions.day{day:02d}")
     start = datetime.now()
 
     part_1 = solution.part_1()

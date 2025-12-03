@@ -38,11 +38,3 @@ def part_2():
         pos = (pos + clicks) % 100
 
     return cycles
-
-
-def main():
-    print(f"Part 1: {part_1()}, Part 2: {part_2()}")
-
-
-if __name__ == "__main__":
-    main()
