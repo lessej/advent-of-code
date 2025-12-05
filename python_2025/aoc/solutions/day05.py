@@ -24,7 +24,11 @@ def merge_ranges(fresh):
 
 
 def can_merge(r1, r2):
-    return (r1[0] <= r2[0] and r1[1] >= r2[0]) or (r1[0] <= r2[1] and r1[1] >= r2[1])
+    return (
+        (r1[0] <= r2[0] and r1[1] >= r2[0])
+        or (r1[0] <= r2[1] and r1[1] >= r2[1])
+        or (r1[0] >= r2[0] and r1[1] <= r2[1])
+    )
 
 
 def merge(r1, r2):
@@ -61,7 +65,6 @@ def part_2():
     parts = into_parts(lines)
 
     fresh = [[int(anchor) for anchor in part.split("-")] for part in parts[0]]
-    fresh.sort(key=lambda r: r[0])
 
     ranges = merge_ranges(fresh)
     return reduce(add, [r[1] - r[0] + 1 for r in ranges])
